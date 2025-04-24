@@ -3,10 +3,14 @@
 namespace App\Entity;
 
 use App\Repository\ClienteRepository;
+use DateTimeImmutable;
+use DateTimeInterface;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: ClienteRepository::class)]
+#[ORM\HasLifecycleCallbacks]
 class Cliente
 {
     #[ORM\Id]
@@ -15,9 +19,11 @@ class Cliente
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank]//validaciones: no puede estar vacío.
     private ?string $nombre = null;
 
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank]
     private ?string $direccion = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
@@ -57,10 +63,16 @@ class Cliente
         return $this->fechaCreacion;
     }
 
-    public function setFechaCreacion(\DateTimeInterface $fechaCreacion): static
+    private function setFechaCreacion(DateTimeInterface $fechaCreacion): static
     {
         $this->fechaCreacion = $fechaCreacion;
 
         return $this;
+    }
+
+    #[ORM\PrePersist]//Esto es para establecer la fecha de creación automáticamente al guardar el cliente.
+    public function establecerFechaCreacionNuevoCliente(): void
+    {
+        $this->setFechaCreacion(new DateTimeImmutable());
     }
 }
