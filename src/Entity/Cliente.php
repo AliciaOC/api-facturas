@@ -63,6 +63,9 @@ class Cliente
         return $this->fechaCreacion;
     }
 
+    /**
+     * Modifico la visibilidad a privada para que un cliente no pueda modificar la fecha
+     */
     private function setFechaCreacion(DateTimeInterface $fechaCreacion): static
     {
         $this->fechaCreacion = $fechaCreacion;
@@ -70,7 +73,11 @@ class Cliente
         return $this;
     }
 
-    #[ORM\PrePersist]//Esto es para establecer la fecha de creación automáticamente al guardar el cliente.
+    /**
+     * PrePersist es para establecer la fecha de creación automáticamente al insertar el cliente.
+     * Tiene que ser público para que Doctrine lo reconozca, pero no admite parámetros.
+     */
+    #[ORM\PrePersist]
     public function establecerFechaCreacionNuevoCliente(): void
     {
         $this->setFechaCreacion(new DateTimeImmutable());

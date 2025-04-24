@@ -19,6 +19,10 @@ class Albaran
     #[ORM\Column]
     private ?int $id = null;
 
+    /**
+     *AlbaranEstadosEnum es un enum que define los estados del albarán, como un diccionario. 
+     *Elijo usar Enum en vez de un boolean porque es más realista pensar que los albaranes pueden tener más de 2 estados.
+     */
     #[ORM\Column(enumType: AlbaranEstadosEnum::class)]
     private ?AlbaranEstadosEnum $estado = AlbaranEstadosEnum::Abierto;
 
@@ -147,7 +151,11 @@ class Albaran
         return $this;
     }
 
-    #[ORM\PreUpdate]//igual que el prepersist, pero se ejecuta antes de actualizar el albarán.
+    /**
+     * PreUpdate es para establecer la fecha de actualización automáticamente al actualizar el albarán.
+     * Similar al funcionamiento de PrePersist.
+     */
+    #[ORM\PreUpdate]
     public function establecerFechaActualizacionAlbaran(): void
     {
         $this->setFechaActualizacion(new DateTimeImmutable());
