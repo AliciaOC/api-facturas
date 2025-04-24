@@ -40,4 +40,9 @@ class FacturaRepository extends ServiceEntityRepository
     //            ->getOneOrNullResult()
     //        ;
     //    }
+    public function guardar(Factura $factura): void
+    {
+        $this->getEntityManager()->persist($factura);
+        $this->getEntityManager()->flush();
+    }
 }

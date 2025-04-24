@@ -40,4 +40,9 @@ class ClienteRepository extends ServiceEntityRepository
     //            ->getOneOrNullResult()
     //        ;
     //    }
+    public function guardar(Cliente $cliente): void
+    {
+        $this->getEntityManager()->persist($cliente);
+        $this->getEntityManager()->flush();
+    }
 }

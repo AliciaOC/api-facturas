@@ -40,4 +40,15 @@ class AlbaranRepository extends ServiceEntityRepository
     //            ->getOneOrNullResult()
     //        ;
     //    }
+    public function guardar(Albaran $albaran): void
+    {
+        $this->getEntityManager()->persist($albaran);
+        $this->getEntityManager()->flush();
+    }
+
+    public function borrar(Albaran $albaran): void
+    {
+        $this->getEntityManager()->remove($albaran);
+        $this->getEntityManager()->flush();
+    }
 }
