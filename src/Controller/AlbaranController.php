@@ -73,6 +73,8 @@ final class AlbaranController extends AbstractController
         int $idAlbaran
     ): JsonResponse|Response
     {
+        //TODO: crear, actualizar o borrar listas
+        
         try {
             $albaran = $this->albaranService->actualizarAlbaran($idAlbaran, $datosActualizacionAlbaran);
 
