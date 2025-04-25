@@ -23,7 +23,7 @@ final class GenericoController extends AbstractController
     public function api(): JsonResponse
     {
         return $this->json([
-            'message' => '¡Bienvenido a mi API de prueba para Gametia!',
+            'message' => 'Bienvenido a mi API de prueba para Gametia!',
         ]);
     }
 }

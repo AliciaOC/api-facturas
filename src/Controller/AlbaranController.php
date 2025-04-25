@@ -10,8 +10,6 @@ use App\Model\Exceptions\ClienteNoEncontradoException;
 use App\Model\Exceptions\ErroresValidacionException;
 use App\Repository\AlbaranRepository;
 use App\Service\AlbaranService;
-use Psr\Container\NotFoundExceptionInterface;
-use Psr\Container\ContainerExceptionInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
@@ -72,9 +70,7 @@ final class AlbaranController extends AbstractController
         #[MapRequestPayload] AlbaranDatosActualizacion $datosActualizacionAlbaran,
         int $idAlbaran
     ): JsonResponse|Response
-    {
-        //TODO: crear, actualizar o borrar listas
-        
+    {     
         try {
             $albaran = $this->albaranService->actualizarAlbaran($idAlbaran, $datosActualizacionAlbaran);
 

@@ -96,6 +96,16 @@ class AlbaranService
             $albaran->setCliente($cliente);
         }
 
+        //TODO:
+        //Actualizacion de las lineas: 
+        //1. Si no hay líneas, no se hacen cambios
+        //2. Si hay líneas:
+        //   2.1. Si es un array vacío borra todas las líneas
+        //   2.2. Si hay contenido:
+        //       2.2.1. Si hay líneas sin id, se añaden
+        //       2.2.2. Si hay líneas con id, se actualizan si hay cambios y se borran las líneas preexistentes que no estén en el array.
+        //       2.2.3. Si hay líneas con id pero el id no existe, se devuelve mensaje de error.
+        
         $errores = $this->validator->validate($albaran);
 
         if (count($errores) > 0) {
