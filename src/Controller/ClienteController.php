@@ -55,9 +55,10 @@ final class ClienteController extends AbstractController
     }
 
     /**
-     *MapRequestPayload es un decorador que se encarga de mapear el cuerpo de la petición a un objeto.
+     *MapRequestPayload es un decorador que se encarga de mapear el cuerpo de la petición a un objeto. 
      *Comprueba que el objeto que se le pasa como argumento tenga las propiedades necesarias. En este caso nombre y direccion.
-     *Manualmente se puede hacer con el método $request->getContent() y luego decodificarlo con json_decode(), obteniendo el array y asignando cada propiedad al objeto.
+     *No estamos recibiendo directamente los parametros en la request por ser una API REST: el cliente envía un JSON con los datos del cliente a crear.
+     *Manualmente se puede hacer con $request->getContent() y luego json_decode(), obteniendo el array y asignando cada propiedad al objeto. MapRequestPayload() lo hace solo.
      */
     #[Route('', name: 'crear', methods: ['POST'], format: 'json')]
     public function crearCliente(
