@@ -5,13 +5,6 @@ namespace App\Controller;
 use App\Entity\Cliente;
 use App\Model\ClienteDatosCreacion;
 use App\Repository\ClienteRepository;
-use Doctrine\ORM\OptimisticLockException;
-use Doctrine\ORM\ORMInvalidArgumentException;
-use Doctrine\ORM\TransactionRequiredException;
-use Doctrine\ORM\Exception\ORMException;
-use RuntimeException;
-use Psr\Container\NotFoundExceptionInterface;
-use Psr\Container\ContainerExceptionInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
@@ -21,6 +14,7 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 /**
  * El decorador aquí es para no repetir el prefijo de la ruta en cada método. Igual con el nombre.
+ * Si hay '' quiere decir que es la misma ruta, en este caso /api/clientes, y el controlador realiza una función u otra según el método HTTP.
  */
 #[Route('/api/clientes', name: 'app_cliente_')]
 final class ClienteController extends AbstractController
@@ -62,7 +56,7 @@ final class ClienteController extends AbstractController
 
     /**
      *MapRequestPayload es un decorador que se encarga de mapear el cuerpo de la petición a un objeto.
-     *Comprueba que el objeto que se le pasa como argumento tenga las propiedades necesarias.
+     *Comprueba que el objeto que se le pasa como argumento tenga las propiedades necesarias. En este caso nombre y direccion.
      *Manualmente se puede hacer con el método $request->getContent() y luego decodificarlo con json_decode(), obteniendo el array y asignando cada propiedad al objeto.
      */
     #[Route('', name: 'crear', methods: ['POST'], format: 'json')]
