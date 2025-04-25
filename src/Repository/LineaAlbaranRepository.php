@@ -40,4 +40,15 @@ class LineaAlbaranRepository extends ServiceEntityRepository
     //            ->getOneOrNullResult()
     //        ;
     //    }
+    public function guardar(LineaAlbaran $lineaAlbaran): void
+    {
+        $this->getEntityManager()->persist($lineaAlbaran);
+        $this->getEntityManager()->flush();
+    }
+
+    public function borrar(LineaAlbaran $lineaAlbaran): void
+    {
+        $this->getEntityManager()->remove($lineaAlbaran);
+        $this->getEntityManager()->flush();
+    }
 }

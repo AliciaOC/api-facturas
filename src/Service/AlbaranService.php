@@ -20,11 +20,13 @@ class AlbaranService
 {
     private AlbaranRepository $albaranRepository;
     private ClienteRepository $clienteRepository;
+    private LineaAlbaranService $lineaAlbaranService;
     private ValidatorInterface $validator;
 
     public function __construct(
         AlbaranRepository $albaranRepository,
         ClienteRepository $clienteRepository,
+        LineaAlbaranService $lineaAlbaranService,
         ValidatorInterface $validator,
     ) {
         $this->albaranRepository = $albaranRepository;
@@ -120,13 +122,7 @@ class AlbaranService
                 foreach ($datosActualizacionAlbaran->lineas as $linea) {
                     //2.2.1. Crea línea
                     if (empty($linea->id)) {
-                        $nuevaLineaAlbaran = new LineaAlbaran();
-                        $nuevaLineaAlbaran->setProducto($linea->producto);
-                        $nuevaLineaAlbaran->setNombreProducto($linea->nombreProducto);
-                        $nuevaLineaAlbaran->setCantidad($linea->cantidad);
-                        $nuevaLineaAlbaran->setPrecioUnitario($linea->precioUnitario);
-
-                        $albaran->addLinea($nuevaLineaAlbaran);
+                        $this->lineaAlbaranService->crearLineaAlbaran($linea);
                     } else {
                         /** @var LineaAlbaran|null $lineaExistente */
                         $lineaExistente = $this->albaranRepository->findLineaById($linea->id);
@@ -138,18 +134,7 @@ class AlbaranService
 
                         //2.2.3. Actualiza línea
                         if ($lineaExistente !== null) {
-                            if ($lineaExistente->getProducto() !== $linea->producto) {
-                                $lineaExistente->setProducto($linea->producto);
-                            }
-                            if ($lineaExistente->getNombreProducto() !== $linea->nombreProducto) {
-                                $lineaExistente->setNombreProducto($linea->nombreProducto);
-                            }
-                            if ($lineaExistente->getCantidad() !== $linea->cantidad) {
-                                $lineaExistente->setCantidad($linea->cantidad);
-                            }
-                            if ($lineaExistente->getPrecioUnitario() !== $linea->precioUnitario) {
-                                $lineaExistente->setPrecioUnitario($linea->precioUnitario);
-                            }
+                            $this->lineaAlbaranService->actualizarLineaAlbaran($lineaExistente->getId(), $linea);
                         }
                     }
 
@@ -158,7 +143,7 @@ class AlbaranService
                 //2.2.4. Borra líneas que no están en el array
                 foreach ($albaran->getLineas() as $linea) {
                     if (!in_array($linea->getId(), $arrayIDsLineasPeticion)) {
-                        $albaran->removeLinea($linea);
+                        $this->lineaAlbaranService->borrarLineaAlbaran($linea->getId());
                     }
                 }
             }
