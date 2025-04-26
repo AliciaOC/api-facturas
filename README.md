@@ -106,8 +106,8 @@ Las rutas `/` y `/api` llevan a un mensaje de bienvenida.
 * `/api/facturas` con **POST** crea una nueva factura.
 
 #### Ejemplo JSON crear una factura (POST).
-´´´
+```
 {
     "albaranes": [1, 2]
 }
-´´´
+```
