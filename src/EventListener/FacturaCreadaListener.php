@@ -2,12 +2,10 @@
 
 namespace App\EventListener;
 
-use App\Entity\Factura;
 use App\Event\FacturaCreadaEvent;
 use App\Model\AlbaranEstadosEnum;
 use App\Repository\AlbaranRepository;
 use App\Repository\FacturaRepository;
-use Doctrine\ORM\EntityManager;
 use Symfony\Component\EventDispatcher\Attribute\AsEventListener;
 
 #[AsEventListener]

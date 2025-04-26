@@ -2,7 +2,6 @@
 
 namespace App\Controller;
 
-use App\Entity\Factura;
 use App\Event\FacturaCreadaEvent;
 use App\Model\Exceptions\AlbaranNoEncontradoException;
 use App\Model\Exceptions\AlbaranYaFacturadoException;
