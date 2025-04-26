@@ -11,7 +11,7 @@ use App\Model\Exceptions\AlbaranNoEncontradoException;
 use App\Model\Exceptions\AlbaranYaFacturadoException;
 use App\Model\Exceptions\ClienteNoEncontradoException;
 use App\Model\Exceptions\ErroresValidacionException;
-use App\Model\Exceptions\LineaAlbaranNoEncontradaException;
+use App\Model\Exceptions\LineaAlbaranNoEncontradaEnAlbaranException;
 use App\Model\LineaAlbaranDatosActualizacion;
 use App\Repository\AlbaranRepository;
 use App\Repository\ClienteRepository;
@@ -21,13 +21,11 @@ class AlbaranService
 {
     private AlbaranRepository $albaranRepository;
     private ClienteRepository $clienteRepository;
-    private LineaAlbaranService $lineaAlbaranService;
     private ValidatorInterface $validator;
 
     public function __construct(
         AlbaranRepository $albaranRepository,
         ClienteRepository $clienteRepository,
-        LineaAlbaranService $lineaAlbaranService,
         ValidatorInterface $validator,
     ) {
         $this->albaranRepository = $albaranRepository;
@@ -101,57 +99,47 @@ class AlbaranService
         }
 
         /**
-         * Actualizacion de las lineas: 
-         *  1. Si no hay líneas, no se hacen cambios
-         *  2. Si hay líneas:
-         *   2.1. Si es un array vacío borra todas las líneas
-         *   2.2. Si hay contenido:
-         *       2.2.1. Si hay líneas sin id, se añaden
-         *       2.2.2. Si hay líneas con id pero el id no existe, se devuelve mensaje de error.
-         *       2.2.3. Si hay líneas con id, se actualizan si hay cambios
-         *       2.2.4. Se borran las líneas preexistentes que no estén en el array.
+         * Actualizaciones de las líneas. 
          */
         if(isset($datosActualizacionAlbaran->lineas)) {
-            //2.1. Borrar todas la líneas
-            if (empty($datosActualizacionAlbaran->lineas)) {
-                $albaran->reiniciarLineas();
-            } else {
-                $arrayIDsLineasPeticion=[];
-                
-                foreach ($datosActualizacionAlbaran->lineas as $linea) {
-                    //2.2.1. Crea línea
-                    if (empty($linea->id)) {
-                        $nuevaLineaAlbaran = new LineaAlbaran();
-
-                        $nuevaLineaAlbaran->setProducto($linea->producto);
-                        $nuevaLineaAlbaran->setNombreProducto($linea->nombreProducto);
-                        $nuevaLineaAlbaran->setCantidad($linea->cantidad);
-                        $nuevaLineaAlbaran->setPrecioUnitario($linea->precioUnitario);
-                    } else {
-                        /** @var LineaAlbaran|null $lineaExistente */
-                        $lineaExistente = $this->albaranRepository->findLineaById($linea->id);
-
-                        //2.2.2. Mensaje de error
-                        if (empty($lineaExistente)) {
-                            throw new LineaAlbaranNoEncontradaException($idAlbaran);
+            //Actualización
+            if(!empty($datosActualizacionAlbaran->lineas->actualizar)){
+                foreach ($datosActualizacionAlbaran->lineas->actualizar as $datosLinea) {
+                    foreach($albaran->getLineas() as $lineaAlbaran){
+                        if($lineaAlbaran->getId() === $datosLinea->id){
+                            $this->actualizarLineaAlbaran($lineaAlbaran, $datosLinea);
+                            break;
                         }
-
-                        //2.2.3. Actualiza línea
-                        if ($lineaExistente !== null) {
-                            $this->actualizarLineaAlbaran($lineaExistente, $linea);
-                        }
-                    }
-
-                    $arrayIDsLineasPeticion[] = $linea->id;
-                }
-                //2.2.4. Borra líneas que no están en el array
-                foreach ($albaran->getLineas() as $linea) {
-                    if (!in_array($linea->getId(), $arrayIDsLineasPeticion)) {
-                        $albaran->removeLinea($linea);
+                        throw new LineaAlbaranNoEncontradaEnAlbaranException($datosLinea->id, $idAlbaran);
                     }
                 }
             }
-        }
+
+            //Borrado
+            if(!empty($datosActualizacionAlbaran->lineas->borrar)){
+                foreach ($datosActualizacionAlbaran->lineas->borrar as $idLinea) {
+                    foreach($albaran->getLineas() as $lineaAlbaran){
+                        if($lineaAlbaran->getId() === $idLinea){
+                            $albaran->removeLinea($lineaAlbaran);
+                            break;
+                        }
+                    }
+                }
+            }
+
+            //Creación
+            if(!empty($datosActualizacionAlbaran->lineas->crear)){
+                foreach ($datosActualizacionAlbaran->lineas->crear as $datosLinea) {
+                    $nuevaLineaAlbaran = new LineaAlbaran();
+                    $nuevaLineaAlbaran->setProducto($datosLinea->producto);
+                    $nuevaLineaAlbaran->setNombreProducto($datosLinea->nombreProducto);
+                    $nuevaLineaAlbaran->setCantidad($datosLinea->cantidad);
+                    $nuevaLineaAlbaran->setPrecioUnitario($datosLinea->precioUnitario);
+
+                    $albaran->addLinea($nuevaLineaAlbaran);
+                }
+            }
+        } 
 
         $errores = $this->validator->validate($albaran);
 
@@ -183,26 +171,21 @@ class AlbaranService
         $this->albaranRepository->borrar($albaran);
     }
 
-        /**
-     * @throws LineaAlbaranNoEncontradoException
-     * @throws ErroresValidacionException
-     */
-    private function actualizarLineaAlbaran(LineaAlbaran $lineaAlbaran, LineaAlbaranDatosActualizacion $datosActualizacionLineaAlbaran): LineaAlbaran
+    private function actualizarLineaAlbaran(LineaAlbaran $lineaAlbaran, LineaAlbaranDatosActualizacion $datos): LineaAlbaran
     {
-        if ($lineaAlbaran->getProducto() !== $datosActualizacionLineaAlbaran->producto) {
-            $lineaAlbaran->setProducto($datosActualizacionLineaAlbaran->producto);
+        if (!empty($datos->producto)) {
+            $lineaAlbaran->setProducto($datos->producto);
         }
-
-        if ($lineaAlbaran->getNombreProducto() !== $datosActualizacionLineaAlbaran->nombreProducto) {
-            $lineaAlbaran->setNombreProducto($datosActualizacionLineaAlbaran->nombreProducto);
+        if (!empty($datos->nombreProducto)) {
+            $lineaAlbaran->setNombreProducto($datos->nombreProducto);
         }
-        if ($lineaAlbaran->getCantidad() !== $datosActualizacionLineaAlbaran->cantidad) {
-            $lineaAlbaran->setCantidad($datosActualizacionLineaAlbaran->cantidad);
+        if (!empty($datos->cantidad)) {
+            $lineaAlbaran->setCantidad($datos->cantidad);
         }
-        if ($lineaAlbaran->getPrecioUnitario() !== $datosActualizacionLineaAlbaran->precioUnitario) {
-            $lineaAlbaran->setPrecioUnitario($datosActualizacionLineaAlbaran->precioUnitario);
+        if (!empty($datos->precioUnitario)) {
+            $lineaAlbaran->setPrecioUnitario($datos->precioUnitario);
         }
-
+        
         return $lineaAlbaran;
     }
 }

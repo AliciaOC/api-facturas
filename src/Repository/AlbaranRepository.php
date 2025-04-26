@@ -3,8 +3,10 @@
 namespace App\Repository;
 
 use App\Entity\Albaran;
+use App\Entity\LineaAlbaran;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use PhpParser\Node\Scalar\MagicConst\Line;
 
 /**
  * @extends ServiceEntityRepository<Albaran>
@@ -16,30 +18,6 @@ class AlbaranRepository extends ServiceEntityRepository
         parent::__construct($registry, Albaran::class);
     }
 
-    //    /**
-    //     * @return Albaran[] Returns an array of Albaran objects
-    //     */
-    //    public function findByExampleField($value): array
-    //    {
-    //        return $this->createQueryBuilder('a')
-    //            ->andWhere('a.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->orderBy('a.id', 'ASC')
-    //            ->setMaxResults(10)
-    //            ->getQuery()
-    //            ->getResult()
-    //        ;
-    //    }
-
-    //    public function findOneBySomeField($value): ?Albaran
-    //    {
-    //        return $this->createQueryBuilder('a')
-    //            ->andWhere('a.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->getQuery()
-    //            ->getOneOrNullResult()
-    //        ;
-    //    }
     public function guardar(Albaran $albaran): void
     {
         $this->getEntityManager()->persist($albaran);
