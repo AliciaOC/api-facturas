@@ -27,12 +27,12 @@ Las rutas `/` y `/api` llevan a un mensaje de bienvenida.
 {
     "idCliente": 1,
     "lineas": [
-    {
-        "producto": 1,
-        "nombreProducto": "Producto 1",
-        "cantidad": 1,
-        "precioUnitario": 1.1
-    }
+        {
+            "producto": 1,
+            "nombreProducto": "Producto 1",
+            "cantidad": 1,
+            "precioUnitario": 1.1
+        }
     ]
 }
 ```
