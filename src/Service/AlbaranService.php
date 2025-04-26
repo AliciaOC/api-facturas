@@ -104,14 +104,18 @@ class AlbaranService
         if(isset($datosActualizacionAlbaran->lineas)) {
             //Actualización
             if(!empty($datosActualizacionAlbaran->lineas->actualizar)){
+                $encontrado = false;
                 foreach ($datosActualizacionAlbaran->lineas->actualizar as $datosLinea) {
                     foreach($albaran->getLineas() as $lineaAlbaran){
                         if($lineaAlbaran->getId() === $datosLinea->id){
                             $this->actualizarLineaAlbaran($lineaAlbaran, $datosLinea);
-                            break;
+                            $encontrado = true;
+                            break 2;
                         }
-                        throw new LineaAlbaranNoEncontradaExceptionEnAlbaran($datosLinea->id, $idAlbaran);
                     }
+                }
+                if(!$encontrado){
+                    throw new LineaAlbaranNoEncontradaExceptionEnAlbaran($datosLinea->id, $idAlbaran);
                 }
             }
 

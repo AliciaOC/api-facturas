@@ -25,15 +25,8 @@ Las rutas `/` y `/api` llevan a un mensaje de bienvenida.
 #### JSON de ejemplo para crear un cliente.
 ```
 {
-    "idCliente": 1,
-    "lineas": [
-        {
-            "producto": 1,
-            "nombreProducto": "Producto 1",
-            "cantidad": 1,
-            "precioUnitario": 1.1
-        }
-    ]
+    "nombre": "Cliente de Prueba",
+    "direccion": "Dirección de prueba"
 }
 ```
 
@@ -53,22 +46,22 @@ Las rutas `/` y `/api` llevan a un mensaje de bienvenida.
     "lineas": 
     [
         {
-        "producto": 4,
-        "nombreProducto": "Producto 4",
-        "cantidad": 4.2,
-        "precioUnitario": 4.2
+            "producto": 4,
+            "nombreProducto": "Producto 4",
+            "cantidad": 4.2,
+            "precioUnitario": 4.2
         },
         {
-        "producto": 5,
-        "nombreProducto": "Producto 5",
-        "cantidad": 4.2,
-        "precioUnitario": 4.2
+            "producto": 5,
+            "nombreProducto": "Producto 5",
+            "cantidad": 4.2,
+            "precioUnitario": 4.2
         },
         {
-        "producto": 6,
-        "nombreProducto": "Producto 6",
-        "cantidad": 4.2,
-        "precioUnitario": 4.2
+            "producto": 6,
+            "nombreProducto": "Producto 6",
+            "cantidad": 4.2,
+            "precioUnitario": 4.2
         }
     ]
 }
@@ -82,19 +75,32 @@ Las rutas `/` y `/api` llevan a un mensaje de bienvenida.
         "actualizar":[
             {
                 "id":1,
+                "producto": 1,
+                "nombreProducto":"Producto actualizado a 1.1",
+                "cantidad": 1,
+                "precioUnitario": 1
+            },
+            {
+                "id":2,
                 "producto": 2,
-                "nombreProducto":"Producto 2",
+                "nombreProducto":"Producto actualizado y a punto de desaparecer 2",
                 "cantidad": 2,
                 "precioUnitario":2
             }
         ],
-        "borrar":[1, 2],
+        "borrar":[2],
         "crear":[
             {
                 "producto":5,
                 "nombreProducto":"Producto 5",
                 "cantidad":5.5,
                 "precioUnitario":5
+            },
+            {
+                "producto": 2,
+                "nombreProducto":"Producto 2 nuevo",
+                "cantidad": 2,
+                "precioUnitario": 2
             }
         ]
     }
@@ -105,9 +111,9 @@ Las rutas `/` y `/api` llevan a un mensaje de bienvenida.
 #### Rutas:
 * `/api/facturas` con **POST** crea una nueva factura.
 
-#### Ejemplo JSON crear una factura (POST).
+#### Ejemplo JSON crear una factura a partir de uno o varios albaranes (POST).
 ```
 {
-    "albaranes": [1, 2]
+    "albaranes": [1, 3]
 }
 ```
