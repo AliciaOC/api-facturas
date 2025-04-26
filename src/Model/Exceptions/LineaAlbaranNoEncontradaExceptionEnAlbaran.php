@@ -2,7 +2,7 @@
 
 namespace App\Model\Exceptions;
 
-class LineaAlbaranNoEncontradaEnAlbaranException extends \Exception
+class LineaAlbaranNoEncontradaExceptionEnAlbaran extends \Exception
 {
     protected int $idLineaAlbaran;
     protected int $idAlbaran;

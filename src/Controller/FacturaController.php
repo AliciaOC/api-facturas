@@ -2,6 +2,8 @@
 
 namespace App\Controller;
 
+use App\Entity\Factura;
+use App\Event\FacturaCreadaEvent;
 use App\Model\Exceptions\AlbaranNoEncontradoException;
 use App\Model\Exceptions\AlbaranYaFacturadoException;
 use App\Model\Exceptions\DistintosClientesEnFacturaException;
@@ -9,6 +11,7 @@ use App\Model\Exceptions\ErroresValidacionException;
 use App\Model\FacturaDatosCreacion;
 use App\Service\FacturaService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Attribute\MapRequestPayload;
@@ -18,11 +21,14 @@ use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
 final class FacturaController extends AbstractController
 {
     private FacturaService $facturaService;
+    private EventDispatcherInterface $eventDispatcher;
 
     public function __construct(
         FacturaService $facturaService,
+        EventDispatcherInterface $eventDispatcher,
     ) {
         $this->facturaService = $facturaService;
+        $this->eventDispatcher = $eventDispatcher;
     }
 
     #[Route('/api/facturas', name: 'app_factura_crear', methods: ['POST'], format: 'json')]
@@ -30,8 +36,8 @@ final class FacturaController extends AbstractController
     {
         try {
             $nuevaFactura = $this->facturaService->crearFactura($datosCreacionFactura);
-
-            // TODO: eventos
+            $evento = new FacturaCreadaEvent($nuevaFactura);
+            $this->eventDispatcher->dispatch($evento);
 
             return $this->generarRespuestaJsonConReferenciasCirculares($nuevaFactura);
         } catch (AlbaranNoEncontradoException $e) {

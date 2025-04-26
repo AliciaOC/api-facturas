@@ -11,7 +11,7 @@ use App\Model\Exceptions\AlbaranNoEncontradoException;
 use App\Model\Exceptions\AlbaranYaFacturadoException;
 use App\Model\Exceptions\ClienteNoEncontradoException;
 use App\Model\Exceptions\ErroresValidacionException;
-use App\Model\Exceptions\LineaAlbaranNoEncontradaEnAlbaranException;
+use App\Model\Exceptions\LineaAlbaranNoEncontradaExceptionEnAlbaran;
 use App\Model\LineaAlbaranDatosActualizacion;
 use App\Repository\AlbaranRepository;
 use App\Repository\ClienteRepository;
@@ -110,7 +110,7 @@ class AlbaranService
                             $this->actualizarLineaAlbaran($lineaAlbaran, $datosLinea);
                             break;
                         }
-                        throw new LineaAlbaranNoEncontradaEnAlbaranException($datosLinea->id, $idAlbaran);
+                        throw new LineaAlbaranNoEncontradaExceptionEnAlbaran($datosLinea->id, $idAlbaran);
                     }
                 }
             }

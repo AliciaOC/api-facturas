@@ -10,14 +10,15 @@ use Symfony\Contracts\EventDispatcher\Event;
  */
 final class FacturaCreadaEvent extends Event
 {
-    private Factura $facturaCreada;
+    private Factura $factura;
 
-    public function __construct(Factura $facturaCreada) {
-        $this->facturaCreada=$facturaCreada;
+    public function __construct(Factura $factura)
+    {
+        $this->factura = $factura;
     }
 
-    public function getFacturaCreada(): Factura
+    public function getFactura(): Factura
     {
-        return $this->facturaCreada;
+        return $this->factura;
     }
 }
