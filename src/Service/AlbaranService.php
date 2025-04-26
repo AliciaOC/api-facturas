@@ -12,6 +12,7 @@ use App\Model\Exceptions\AlbaranYaFacturadoException;
 use App\Model\Exceptions\ClienteNoEncontradoException;
 use App\Model\Exceptions\ErroresValidacionException;
 use App\Model\Exceptions\LineaAlbaranNoEncontradaException;
+use App\Model\LineaAlbaranDatosActualizacion;
 use App\Repository\AlbaranRepository;
 use App\Repository\ClienteRepository;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
@@ -110,19 +111,22 @@ class AlbaranService
          *       2.2.3. Si hay líneas con id, se actualizan si hay cambios
          *       2.2.4. Se borran las líneas preexistentes que no estén en el array.
          */
-        if(!empty($datosActualizacionAlbaran->lineas)) {
+        if(isset($datosActualizacionAlbaran->lineas)) {
             //2.1. Borrar todas la líneas
-            if (count($datosActualizacionAlbaran->lineas) === 0) {
-                foreach ($albaran->getLineas() as $linea) {
-                    $albaran->removeLinea($linea);
-                }
+            if (empty($datosActualizacionAlbaran->lineas)) {
+                $albaran->reiniciarLineas();
             } else {
                 $arrayIDsLineasPeticion=[];
                 
                 foreach ($datosActualizacionAlbaran->lineas as $linea) {
                     //2.2.1. Crea línea
                     if (empty($linea->id)) {
-                        $this->lineaAlbaranService->crearLineaAlbaran($linea);
+                        $nuevaLineaAlbaran = new LineaAlbaran();
+
+                        $nuevaLineaAlbaran->setProducto($linea->producto);
+                        $nuevaLineaAlbaran->setNombreProducto($linea->nombreProducto);
+                        $nuevaLineaAlbaran->setCantidad($linea->cantidad);
+                        $nuevaLineaAlbaran->setPrecioUnitario($linea->precioUnitario);
                     } else {
                         /** @var LineaAlbaran|null $lineaExistente */
                         $lineaExistente = $this->albaranRepository->findLineaById($linea->id);
@@ -134,7 +138,7 @@ class AlbaranService
 
                         //2.2.3. Actualiza línea
                         if ($lineaExistente !== null) {
-                            $this->lineaAlbaranService->actualizarLineaAlbaran($lineaExistente->getId(), $linea);
+                            $this->actualizarLineaAlbaran($lineaExistente, $linea);
                         }
                     }
 
@@ -143,7 +147,7 @@ class AlbaranService
                 //2.2.4. Borra líneas que no están en el array
                 foreach ($albaran->getLineas() as $linea) {
                     if (!in_array($linea->getId(), $arrayIDsLineasPeticion)) {
-                        $this->lineaAlbaranService->borrarLineaAlbaran($linea->getId());
+                        $albaran->removeLinea($linea);
                     }
                 }
             }
@@ -177,5 +181,28 @@ class AlbaranService
         }
 
         $this->albaranRepository->borrar($albaran);
+    }
+
+        /**
+     * @throws LineaAlbaranNoEncontradoException
+     * @throws ErroresValidacionException
+     */
+    private function actualizarLineaAlbaran(LineaAlbaran $lineaAlbaran, LineaAlbaranDatosActualizacion $datosActualizacionLineaAlbaran): LineaAlbaran
+    {
+        if ($lineaAlbaran->getProducto() !== $datosActualizacionLineaAlbaran->producto) {
+            $lineaAlbaran->setProducto($datosActualizacionLineaAlbaran->producto);
+        }
+
+        if ($lineaAlbaran->getNombreProducto() !== $datosActualizacionLineaAlbaran->nombreProducto) {
+            $lineaAlbaran->setNombreProducto($datosActualizacionLineaAlbaran->nombreProducto);
+        }
+        if ($lineaAlbaran->getCantidad() !== $datosActualizacionLineaAlbaran->cantidad) {
+            $lineaAlbaran->setCantidad($datosActualizacionLineaAlbaran->cantidad);
+        }
+        if ($lineaAlbaran->getPrecioUnitario() !== $datosActualizacionLineaAlbaran->precioUnitario) {
+            $lineaAlbaran->setPrecioUnitario($datosActualizacionLineaAlbaran->precioUnitario);
+        }
+
+        return $lineaAlbaran;
     }
 }

@@ -109,6 +109,15 @@ class Albaran
         return $this;
     }
 
+    public function reiniciarLineas(): static
+    {
+        foreach ($this->lineas as $linea) {
+            $this->removeLinea($linea);
+        }
+
+        return $this;
+    }
+
     public function getFactura(): ?Factura
     {
         return $this->factura;

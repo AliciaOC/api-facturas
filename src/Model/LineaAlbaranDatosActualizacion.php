@@ -13,18 +13,18 @@ class LineaAlbaranDatosActualizacion
 
         #[Assert\Type(type: 'integer')]
         #[Assert\Positive]
-        public int $producto,
+        public ?int $producto,
     
         #[Assert\NotBlank]
-        public string $nombreProducto,
+        public ?string $nombreProducto,
     
         #[Assert\Type(type: 'float')]
         #[Assert\Positive]
-        public float $cantidad,
+        public ?float $cantidad,
     
         #[Assert\Type(type: 'float')]
         #[Assert\Positive]
-        public float $precioUnitario,
+        public ?float $precioUnitario,
     ) {
     }
 }

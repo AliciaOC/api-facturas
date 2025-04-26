@@ -26,7 +26,7 @@ class LineaAlbaranService
     /**
      * @throws ErroresValidacionException
      */
-    public function crearLineaAlbaran(LineaAlbaranDatosCreacion $datosCreacionLineaAlbaran): LineaAlbaran
+    public function generarLineaAlbaran(LineaAlbaranDatosCreacion $datosCreacionLineaAlbaran): LineaAlbaran
     {
         $nuevaLineaAlbaran = new LineaAlbaran();
 
@@ -35,58 +35,6 @@ class LineaAlbaranService
         $nuevaLineaAlbaran->setCantidad($datosCreacionLineaAlbaran->cantidad);
         $nuevaLineaAlbaran->setPrecioUnitario($datosCreacionLineaAlbaran->precioUnitario);
 
-        $errores = $this->validator->validate($nuevaLineaAlbaran);
-
-        if (count($errores) > 0) {
-            throw new ErroresValidacionException($errores);
-        }
-
-        $this->lineaAlbaranRepository->guardar($nuevaLineaAlbaran);
-
         return $nuevaLineaAlbaran;
-    }
-
-    /**
-     * @throws LineaAlbaranNoEncontradoException
-     * @throws ErroresValidacionException
-     */
-    public function actualizarLineaAlbaran(int $idLineaAlbaran, LineaAlbaranDatosActualizacion $datosActualizacionLineaAlbaran): LineaAlbaran
-    {
-        /** @var LineaAlbaran|null $lineaAlbaran */
-        $lineaAlbaran = $this->lineaAlbaranRepository->find($idLineaAlbaran);
-
-        if ($lineaAlbaran->getProducto() !== $datosActualizacionLineaAlbaran->producto) {
-            $lineaAlbaran->setProducto($datosActualizacionLineaAlbaran->producto);
-        }
-
-        if ($lineaAlbaran->getNombreProducto() !== $datosActualizacionLineaAlbaran->nombreProducto) {
-            $lineaAlbaran->setNombreProducto($datosActualizacionLineaAlbaran->nombreProducto);
-        }
-        if ($lineaAlbaran->getCantidad() !== $datosActualizacionLineaAlbaran->cantidad) {
-            $lineaAlbaran->setCantidad($datosActualizacionLineaAlbaran->cantidad);
-        }
-        if ($lineaAlbaran->getPrecioUnitario() !== $datosActualizacionLineaAlbaran->precioUnitario) {
-            $lineaAlbaran->setPrecioUnitario($datosActualizacionLineaAlbaran->precioUnitario);
-        }
-        
-        $errores = $this->validator->validate($lineaAlbaran);
-
-        if (count($errores) > 0) {
-            throw new ErroresValidacionException($errores);
-        }
-
-        $this->lineaAlbaranRepository->guardar($lineaAlbaran);
-
-        return $lineaAlbaran;
-    }
-
-    /**
-     * @throws LineaAlbaranNoEncontradoException
-     */
-    public function borrarLineaAlbaran(int $idLineaAlbaran): void
-    {
-        $lineaAlbaran = $this->lineaAlbaranRepository->find($idLineaAlbaran);
-
-        $this->lineaAlbaranRepository->borrar($lineaAlbaran);
     }
 }
