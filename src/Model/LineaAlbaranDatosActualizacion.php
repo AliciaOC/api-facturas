@@ -15,7 +15,10 @@ class LineaAlbaranDatosActualizacion
         #[Assert\Positive]
         public ?int $producto,
     
-        #[Assert\NotBlank]
+        #[Assert\AtLeastOneOf([
+            new Assert\IsNull,
+            new Assert\NotBlank
+        ])]
         public ?string $nombreProducto,
     
         #[Assert\Type(type: 'float')]

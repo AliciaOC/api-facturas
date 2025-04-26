@@ -4,22 +4,16 @@ namespace App\Model;
 
 use Symfony\Component\Validator\Constraints as Assert;
 
+#[Assert\Cascade]
 class AlbaranDatosActualizacion
 {
-    /**
-     * @param array<int,LineaAlbaranDatosActualizacion> $lineas
-     */
     public function __construct(
         #[Assert\Type(type: 'integer')]
         #[Assert\Positive]
-        public int $idCliente,
+        public ?int $idCliente,
 
-        /**
-         * @var LineaAlbaranDatosActualizacion[] $lineas
-         */
-        #[Assert\All([new Assert\Type(LineaAlbaranDatosActualizacion::class)])]
-        #[Assert\Optional] //No es obligatorio que haya lineas a actualizar
-        public array $lineas,
+        #[Assert\Type(type: LineaAlbaranDatosModificacion::class)]
+        public ?LineaAlbaranDatosModificacion $lineas,
     ) {
     }
 }
