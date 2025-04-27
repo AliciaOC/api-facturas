@@ -74,6 +74,7 @@ class AlbaranService
      * @throws AlbaranYaFacturadoException
      * @throws ClienteNoEncontradoException
      * @throws ErroresValidacionException
+     * @throws LineaAlbaranNoEncontradaExceptionEnAlbaran
      */
     public function actualizarAlbaran(int $idAlbaran, AlbaranDatosActualizacion $datosActualizacionAlbaran): Albaran
     {
@@ -104,18 +105,18 @@ class AlbaranService
         if(isset($datosActualizacionAlbaran->lineas)) {
             //Actualización
             if(!empty($datosActualizacionAlbaran->lineas->actualizar)){
-                $encontrado = false;
                 foreach ($datosActualizacionAlbaran->lineas->actualizar as $datosLinea) {
+                    $encontrado = false;
                     foreach($albaran->getLineas() as $lineaAlbaran){
                         if($lineaAlbaran->getId() === $datosLinea->id){
                             $this->actualizarLineaAlbaran($lineaAlbaran, $datosLinea);
                             $encontrado = true;
-                            break 2;
+                            break;
                         }
                     }
-                }
-                if(!$encontrado){
-                    throw new LineaAlbaranNoEncontradaExceptionEnAlbaran($datosLinea->id, $idAlbaran);
+                    if(!$encontrado){
+                        throw new LineaAlbaranNoEncontradaExceptionEnAlbaran($datosLinea->id, $idAlbaran);
+                    }
                 }
             }
 

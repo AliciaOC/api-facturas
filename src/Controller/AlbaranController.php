@@ -8,6 +8,7 @@ use App\Model\Exceptions\AlbaranNoEncontradoException;
 use App\Model\Exceptions\AlbaranYaFacturadoException;
 use App\Model\Exceptions\ClienteNoEncontradoException;
 use App\Model\Exceptions\ErroresValidacionException;
+use App\Model\Exceptions\LineaAlbaranNoEncontradaExceptionEnAlbaran;
 use App\Repository\AlbaranRepository;
 use App\Service\AlbaranService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -81,6 +82,8 @@ final class AlbaranController extends AbstractController
             return $this->json(['error' => sprintf('El albarán ID %d no puede ser modificado ya que ya ha sido facturado.', $e->getIdAlbaran())], Response::HTTP_UNPROCESSABLE_ENTITY);
         } catch (ClienteNoEncontradoException $e) {
             return $this->json(['error' => sprintf('No existe ningún cliente con ID %d.', $e->getIdCliente())], Response::HTTP_UNPROCESSABLE_ENTITY);
+        } catch (LineaAlbaranNoEncontradaExceptionEnAlbaran $e) {
+            return $this->json(['error' => sprintf('La línea de albarán con ID %d no ha sido encontrada en el albarán ID %d.', $e->getIdLineaAlbaran(), $e->getIdAlbaran())], Response::HTTP_UNPROCESSABLE_ENTITY);
         } catch (ErroresValidacionException $e) {
             return $this->json($e->getErrores(), Response::HTTP_UNPROCESSABLE_ENTITY);
         }
@@ -102,7 +105,7 @@ final class AlbaranController extends AbstractController
 
     /**
      * Sin esto hay un bucle infinito cuando intento devolver directamente con json un objeto que tiene referencias circulares.
-     * Por ejemplo, cada albaran contiene lineas y cada linea contiene un albaran, que contiene lineas y etc.
+     * Por ejemplo: cada albaran contiene lineas y cada linea contiene un albaran, que contiene lineas y etc.
      * Con esto el bucle se rompe cuando vuelve a encontrar el mismo objeto.
      * El return de AbstractNormalizer tiene que devolver algo siempre, yo he elegido el id del objeto.
      */

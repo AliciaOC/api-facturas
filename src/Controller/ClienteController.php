@@ -30,18 +30,13 @@ final class ClienteController extends AbstractController
         $this->validator = $validator;
     }
 
-    /**
-     * Solo va a funcionar con get y siempre va a devolver un json.
-     */
     #[Route('', name: 'listar', methods: ['GET'], format: 'json')]
     public function listarClientes(): JsonResponse
     {
         return $this->json($this->clienteRepository->findAll());
     }
 
-    /**
-     * En la petición debe venir el id del cliente y ser un número entero.
-     */
+
     #[Route('/{idCliente}', name: 'ver', methods: ['GET'], format: 'json', requirements: ['idCliente' => '\d+'])]
     public function verCliente(int $idCliente): JsonResponse|Response
     {
@@ -55,10 +50,8 @@ final class ClienteController extends AbstractController
     }
 
     /**
-     *MapRequestPayload es un decorador que se encarga de mapear el cuerpo de la petición a un objeto. 
-     *Comprueba que el objeto que se le pasa como argumento tenga las propiedades necesarias. En este caso nombre y direccion.
-     *No estamos recibiendo directamente los parametros en la request por ser una API REST: el cliente envía un JSON con los datos del cliente a crear.
-     *Manualmente se puede hacer con $request->getContent() y luego json_decode(), obteniendo el array y asignando cada propiedad al objeto. MapRequestPayload() lo hace solo.
+     *MapRequestPayload es un decorador que se encarga de mapear el cuerpo JSON de la petición a un objeto. 
+     *Comprueba que el objeto que se le pasa como argumento tenga las propiedades necesarias (establecidas en una clase). En este caso nombre y direccion.
      */
     #[Route('', name: 'crear', methods: ['POST'], format: 'json')]
     public function crearCliente(
