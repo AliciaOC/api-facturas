@@ -43,8 +43,8 @@ Ambos campos son obligatorios.
 
 #### Ejemplos JSON.
 ##### Crear un albarán (POST).
-Es obligatorio que estén presentes el **'idCliente** y **'lineas'**, no pueden ser null pero se admite `"lineas:[]`. 
-El cliente debe existir.
+* Es obligatorio que estén presentes el **'idCliente** y **'lineas'**, no pueden ser null pero se admite `"lineas:[]`. 
+* El cliente debe existir.
 
 ```
 {
@@ -74,12 +74,12 @@ El cliente debe existir.
 ```
 
 ##### Modifica un albarán (PATH).
-Los parámetros **'idCliente'**, **'lineas'**, **'actualizar'**, **'borrar'**, **'crear'** son opcionales: si no se incluyen no se aplican sus respectivos cambios.
-También es válido que los arrays estén vacíos como por ejemplo  `"borrar": []`, simplemente se ignoran. Pero no pueden ser null.
-Si el albarán ya está facturado no permite modificación y lanza un error. 
-Si el 'id' del albarán pasado en la ruta no existiera no hace nada.
-Si en **'borrar'** no encuentra la línea la ignora.
-Si el ID de algunas de las líneas a actualizar no existiera lanza un error.
+* Los parámetros **'idCliente'**, **'lineas'**, **'actualizar'**, **'borrar'**, **'crear'** son opcionales: si no se incluyen no se aplican sus respectivos cambios.
+* También es válido que los arrays estén vacíos como por ejemplo  `"borrar": []`, simplemente se ignoran. Pero no pueden ser null.
+* Si el albarán ya está facturado no permite modificación y lanza un error. 
+* Si el 'id' del albarán pasado en la ruta no existiera no hace nada.
+* Si en **'borrar'** no encuentra la línea la ignora.
+* Si el ID de algunas de las líneas a actualizar no existiera lanza un error.
 
 ```
 {
@@ -125,10 +125,10 @@ Si el ID de algunas de las líneas a actualizar no existiera lanza un error.
 * `/api/facturas` con **POST** crea una nueva factura.
 
 #### Ejemplo JSON crear una factura a partir de uno o varios albaranes (POST).
-No permite facturar un albarán que ya estuviera facturado.
-No permite *null* ni un array vacío.
-Si el albarán no existe lanza un error.
-Todos lo albaranes deben ser del mismo cliente o lanza un error.
+* No permite facturar un albarán que ya estuviera facturado.
+* No permite *null* ni un array vacío.
+* Si el albarán no existe lanza un error.
+* Todos lo albaranes deben ser del mismo cliente o lanza un error.
 
 ```
 {
